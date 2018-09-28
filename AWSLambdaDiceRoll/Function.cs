@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Amazon.Lambda.Core;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -12,16 +10,43 @@ namespace AWSLambdaDiceRoll
 {
     public class Function
     {
-        
+        public static readonly JsonSerializer _JsonSerializer = new JsonSerializer();
         /// <summary>
         /// A simple function that takes a string and does a ToUpper
         /// </summary>
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public string FunctionHandler(string input, ILambdaContext context)
+        public string FunctionHandler(JObject input, ILambdaContext context)
         {
-            return input?.ToUpper();
+            string numberOfDice = input["numberOfDice"].ToString();
+            string numberOfSides = input["numberOfSides"].ToString();
+
+            int numSides = 6;
+            int diceNumber;
+
+            int.TryParse(numberOfDice, out diceNumber);
+            int.TryParse(numberOfSides, out numSides);
+
+            if (diceNumber < 1)
+            {
+                diceNumber = 2;
+            }
+
+            if (numSides < 1)
+            {
+                numSides = 6;
+            }
+
+            var result = 0;
+            var rand = new Random(Guid.NewGuid().GetHashCode());
+
+            for (int i = 0; i < diceNumber; i++)
+            {
+                result += rand.Next(1, numSides);
+            }
+
+            return result.ToString();
         }
     }
 }
