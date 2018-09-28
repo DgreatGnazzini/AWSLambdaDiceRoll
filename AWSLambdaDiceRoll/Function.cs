@@ -43,7 +43,7 @@ namespace AWSLambdaDiceRoll
 
             for (int i = 0; i < diceNumber; i++)
             {
-                result += rand.Next(1, numSides);
+                result += rand.Next(1, numSides+1);
             }
 
             return result.ToString();
