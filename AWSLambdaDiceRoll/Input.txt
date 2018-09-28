@@ -1,0 +1,4 @@
+﻿{
+  "numberOfDice":"2",
+  "numberOfSides":"6"
+}
